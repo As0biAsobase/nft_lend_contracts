@@ -28,6 +28,7 @@ contract LendingPool is OwnableUpgradeable, ERC721Upgradeable, Clone {
     mapping(bytes32=>uint) public pools; // Will just be 1 or 0, a boolean implemented as a uint to save gas
 
     address public oracle;
+    uint216 public NFTprice;
     address public factory;
     uint public totalBorrowed; // = 0;
     uint public maxDailyBorrows; // IMPORTANT: an attacker can borrow up to 150% of this limit if they prepare beforehand
@@ -50,13 +51,15 @@ contract LendingPool is OwnableUpgradeable, ERC721Upgradeable, Clone {
     event PoolEnabled(bytes32 poolHash, address nftContract, uint96 maxVariableInterestPerEthPerSecond, uint96 minimumInterest, uint ltv, uint maxPrice, uint maxLoanLength);
     event PoolDisabled(bytes32 poolHash);
 
-    function initialize(address _oracle, uint _maxDailyBorrows, string memory _name,
+    function initialize(address _NFTprice, uint _maxDailyBorrows, string memory _name,
         string memory _symbol, address _factory) initializer public
     {
         __Ownable_init_unchained();
         __ERC721_init_unchained(_name, _symbol);
-        require(_oracle != address(0), "oracle can't be 0");
-        oracle = _oracle;
+        // require(_oracle != address(0), "oracle can't be 0");
+        // oracle = _oracle;
+        require(_NFTprice > 0, "price can't be 0 or negative");
+        NFTprice = _NFTprice;
         maxDailyBorrows = _maxDailyBorrows;
         lastUpdateDailyBorrows = uint40(block.timestamp);
         factory = _factory;
@@ -139,7 +142,8 @@ contract LendingPool is OwnableUpgradeable, ERC721Upgradeable, Clone {
         // Signature
         Signature calldata signature // To get around Stack too deep
     ) external {
-        checkOracle(poolData.nftContract, price, deadline, poolData.maxPrice, signature.v, signature.r, signature.s); // Also checks that loans for `nftContract` are accepted in this pool by reverting if maxPrice == 0
+        // checkOracle(poolData.nftContract, price, deadline, poolData.maxPrice, signature.v, signature.r, signature.s); // Also checks that loans for `nftContract` are accepted in this pool by reverting if maxPrice == 0
+        checkPrice(price, poolData.maxPrice);
         bytes32 poolHash = getPoolHash(poolData.nftContract, poolData.maxVariableInterestPerEthPerSecond, poolData.minimumInterest, poolData.ltv, poolData.maxPrice, poolData.maxLoanLength);
         require(pools[poolHash] == 1, "Nonexisting pool");
         // LTV can be manipulated by pool owner to change price in any way, however we check against user provided value so it shouldnt matter
@@ -243,6 +247,11 @@ contract LendingPool is OwnableUpgradeable, ERC721Upgradeable, Clone {
         IERC721(loan.nftContract).transferFrom(address(this), to, loan.nft);
     }
 
+    function setPrice(uint216 newValue) external onlyOwner {
+        require(newValue > 0, "price can't be 0 or negative");
+        NFTprice = newValue;
+    }
+
     function setOracle(address newValue) external onlyOwner {
         require(newValue != address(0), "oracle can't be 0");
         oracle = newValue;
@@ -267,6 +276,11 @@ contract LendingPool is OwnableUpgradeable, ERC721Upgradeable, Clone {
         } else if (reservedForWithdrawals != 0){
             reservedForWithdrawals = 0;
         }
+    }
+
+    function checkPrice(uint256 price) public view {
+        require(price < maxPrice, "max price");
+        require(price == NFTprice, "price too high");
     }
 
     function checkOracle(
