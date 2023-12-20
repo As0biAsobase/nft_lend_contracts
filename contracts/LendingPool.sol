@@ -51,7 +51,7 @@ contract LendingPool is OwnableUpgradeable, ERC721Upgradeable, Clone {
     event PoolEnabled(bytes32 poolHash, address nftContract, uint96 maxVariableInterestPerEthPerSecond, uint96 minimumInterest, uint ltv, uint maxPrice, uint maxLoanLength);
     event PoolDisabled(bytes32 poolHash);
 
-    function initialize(address _NFTprice, uint _maxDailyBorrows, string memory _name,
+    function initialize(uint216 _NFTprice, uint _maxDailyBorrows, string memory _name,
         string memory _symbol, address _factory) initializer public
     {
         __Ownable_init_unchained();
@@ -278,7 +278,7 @@ contract LendingPool is OwnableUpgradeable, ERC721Upgradeable, Clone {
         }
     }
 
-    function checkPrice(uint256 price) public view {
+    function checkPrice(uint256 price, uint maxPrice) public view {
         require(price < maxPrice, "max price");
         require(price == NFTprice, "price too high");
     }

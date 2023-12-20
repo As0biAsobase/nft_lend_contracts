@@ -23,32 +23,25 @@ module.exports = {
   },
   networks: {
     hardhat: {
-      forking: {
-        url: process.env.GOERLI_RPC
-      }
     },
-    mainnet: {
-      url: process.env.ETH_RPC,
-      accounts: [process.env.PRIVATEKEY],
-      gasMultiplier: 1.1,
-    },
-    kovan: {
-      url: process.env.KOVAN_RPC,
-      accounts: [process.env.PRIVATEKEY],
-      gasMultiplier: 1.5,
-    },
-    goerli: {
-      url: process.env.GOERLI_RPC,
-      accounts: [process.env.PRIVATEKEY],
-      gasMultiplier: 1.5,
-    },
-    fuji: {
-      url: 'https://rpc.ankr.com/avalanche_fuji',
-      accounts: [process.env.PRIVATEKEY],
-      gasMultiplier: 1.5,
+    snowtrace: {
+      url: 'https://api.avax-test.network/ext/bc/C/rpc',
+      accounts: [process.env.PRIVATEKEY]
     },
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN
+    apiKey: {
+      snowtrace: "snowtrace", // apiKey is not required, just set a placeholder
+    },
+    customChains: [
+      {
+        network: "snowtrace",
+        chainId: 43113,
+        urls: {
+          apiURL: "https://api.routescan.io/v2/network/testnet/evm/43113/etherscan",
+          browserURL: "https://avalanche.testnet.routescan.io"
+        }
+      }
+    ]
   },
 };

@@ -1,7 +1,7 @@
 const { ethers } = require("hardhat");
 
 async function deployAll(
-  _oracle,
+  _NFTprice,
   _maxPrice,
   _maxDailyBorrows,
   _name,
@@ -27,7 +27,7 @@ async function deployAll(
   await mockNft.deployed();
   
   await factory.createPool(
-    _oracle,
+    _NFTprice,
     _maxDailyBorrows,
     _name,
     _symbol,

@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 contract MockNFT is ERC721 {
     uint256 private _currentTokenId;
 
-    constructor() ERC721("Mock NFT", "MOCK") {}
+    constructor() ERC721("Mock Peon NFT", "PEON") {}
 
     function mint(uint256 amount, address to) external {
         for (uint256 i = 0; i < amount; i++) {

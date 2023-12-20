@@ -26,12 +26,13 @@ contract LlamaLendFactory is Ownable {
         uint96 minimumInterest;
         uint ltv;
     }
+    
     function createPool(
-        address _oracle, 
+        uint216 _NFTprice, 
         uint _maxDailyBorrows, string memory _name, string memory _symbol, NewPool[] calldata pools
     ) external payable returns (LendingPool pool) {
         pool = LendingPool(address(implementation).clone());
-        pool.initialize(_oracle, _maxDailyBorrows, _name, _symbol, address(this));
+        pool.initialize(_NFTprice, _maxDailyBorrows, _name, _symbol, address(this));
         for(uint i = 0; i<pools.length; i++){
             NewPool calldata poolParams = pools[i];
             require(poolParams.maxLoanLength < 1e18, "maxLoanLength too big"); // 31bn years, makes sure that reverts cant be forced through this
