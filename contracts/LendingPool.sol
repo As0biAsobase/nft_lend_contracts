@@ -133,14 +133,14 @@ contract LendingPool is OwnableUpgradeable, ERC721Upgradeable, Clone {
         // Call params
         uint[] calldata nftId,
         uint216 price,
-        uint256 deadline,
+        // uint256 deadline,
         // Slippage checks
         uint256 maxInterest,
         uint256 totalToBorrow,
         // Pool data
-        PoolData calldata poolData, // To get around Stack too deep
+        PoolData calldata poolData // To get around Stack too deep
         // Signature
-        Signature calldata signature // To get around Stack too deep
+        // Signature calldata signature // To get around Stack too deep
     ) external {
         // checkOracle(poolData.nftContract, price, deadline, poolData.maxPrice, signature.v, signature.r, signature.s); // Also checks that loans for `nftContract` are accepted in this pool by reverting if maxPrice == 0
         checkPrice(price, poolData.maxPrice);

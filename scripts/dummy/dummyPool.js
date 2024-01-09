@@ -46,7 +46,6 @@ async function main(hre) {
     ]);
 
     await factory.createPool(
-
         PRICE,
         startMaxDailyBorrows,
         "Peon Loan",

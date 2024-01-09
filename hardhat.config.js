@@ -26,6 +26,12 @@ module.exports = {
     },
     snowtrace: {
       url: 'https://api.avax-test.network/ext/bc/C/rpc',
+      accounts: [process.env.PRIVATEKEY],
+      gas: 2100000,
+      gasPrice: 25000000000,
+    },
+    snowtrace_main: {
+      url: 'https://api.avax.network/ext/bc/C/rpc',
       accounts: [process.env.PRIVATEKEY]
     },
   },
@@ -40,6 +46,14 @@ module.exports = {
         urls: {
           apiURL: "https://api.routescan.io/v2/network/testnet/evm/43113/etherscan",
           browserURL: "https://avalanche.testnet.routescan.io"
+        }
+      },
+      {
+        network: "snowtrace_main",
+        chainId: 43114,
+        urls: {
+          apiURL: "https://api.routescan.io/v2/network/mainnet/evm/43114/etherscan",
+          browserURL: "https://avalanche.routescan.io"
         }
       }
     ]
